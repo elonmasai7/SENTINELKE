@@ -11,6 +11,7 @@ services:
       - neo4j
       - redis
       - ml-service
+      - llama-cpp-server
     volumes:
       - ../backend:/app
     ports:
@@ -36,6 +37,11 @@ services:
     ports:
       - "9000:9000"
 
+  llama-cpp-server:
+    image: ghcr.io/ggerganov/llama.cpp:server
+    command: ["--port", "8080"]
+    ports:
+      - "8080:8080"
   redis:
     image: redis:7-alpine
     ports:
@@ -74,3 +80,5 @@ services:
 volumes:
   pgdata:
   neo4jdata:
+
+

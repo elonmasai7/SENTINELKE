@@ -19,6 +19,7 @@ SentinelKE is a compliance-first national security and intelligence coordination
 - `apps/evidence_automation`: integrity anchoring, automated reports, witness redaction jobs
 - `apps/field_ops`: drone feed metadata and offline sync integrity logs
 - `apps/federation`: federated query gateway and international exchange logs
+- `apps/ai_gateway`: hybrid AI orchestration (Claude, OpenRouter, llama.cpp), sensitivity filtering, caching, and AI request logging
 
 ## Compliance Enforcement
 - Sensitive V2 endpoints require an active warrant tied to the case.
@@ -72,3 +73,4 @@ SentinelKE is a compliance-first national security and intelligence coordination
 - `/api/evidence-automation/`
 - `/api/field-ops/`
 - `/api/federation/`
+- `/api/ai/`

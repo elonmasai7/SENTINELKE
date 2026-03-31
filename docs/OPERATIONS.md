@@ -39,3 +39,4 @@
 ## Compliance Gate
 - For sensitive V2 modules, warrant.authorized_scope is validated against requested operation scope. Out-of-scope requests are blocked at API layer.
 
+- AI gateway endpoints are served under /api/ai/* and require RBAC plus warrant-linked audit context when case-bound.

@@ -31,6 +31,13 @@ class HomeScreen extends StatelessWidget {
               onTap: () => Navigator.pushNamed(context, '/workspace'),
             ),
           ),
+          Card(
+            child: ListTile(
+              title: const Text('AI Assistant Gateway'),
+              subtitle: const Text('Secure query, case brief, and field intelligence assistant'),
+              onTap: () => Navigator.pushNamed(context, '/ai-assistant'),
+            ),
+          ),
           const Card(
             child: ListTile(
               title: Text('Offline Integrity Queue'),

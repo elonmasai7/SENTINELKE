@@ -22,4 +22,6 @@ urlpatterns = [
     path('api/evidence-automation/', include('apps.evidence_automation.urls')),
     path('api/field-ops/', include('apps.field_ops.urls')),
     path('api/federation/', include('apps.federation.urls')),
+    path('api/ai/', include('apps.ai_gateway.urls')),
 ]
+

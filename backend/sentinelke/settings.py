@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'apps.evidence_automation',
     'apps.field_ops',
     'apps.federation',
+    'apps.ai_gateway',
 ]
 
 MIDDLEWARE = [
@@ -131,3 +132,11 @@ CHANNEL_LAYERS = {
         'CONFIG': {'hosts': [os.environ.get('REDIS_URL', 'redis://redis:6379/2')]},
     }
 }
+
+CLAUDE_API_KEY = os.environ.get('CLAUDE_API_KEY', '')
+CLAUDE_MODEL = os.environ.get('CLAUDE_MODEL', 'claude-3-5-sonnet-latest')
+OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY', '')
+OPENROUTER_MODEL = os.environ.get('OPENROUTER_MODEL', 'openrouter/auto')
+LLAMA_CPP_URL = os.environ.get('LLAMA_CPP_URL', 'http://localhost:8080')
+AI_DEFAULT_PROVIDER = os.environ.get('AI_DEFAULT_PROVIDER', 'openrouter')
+

@@ -47,3 +47,4 @@
 - Field ops adds drone feed metadata and offline sync integrity logs with cryptographic signatures.
 - Federation app adds federated search orchestration and international exchange audit trails.
 
+- AI Gateway app introduces hybrid provider routing (Claude/OpenRouter/llama.cpp), compliance-aware prompt sanitization, AI cache, token accounting, and immutable AI request logs.
