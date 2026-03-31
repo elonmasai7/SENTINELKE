@@ -26,7 +26,7 @@ SentinelKE is a compliance-first national security and intelligence coordination
 - Object-level RBAC enforces agency scope, assignment, and case clearance thresholds.
 - Audit records remain cryptographically signed.
 
-## Quick Start
+## Quick Start (Docker)
 1. Copy `backend/.env.example` to `.env` and set production secrets.
 2. Start stack:
    - `cd deployment`
@@ -35,6 +35,19 @@ SentinelKE is a compliance-first national security and intelligence coordination
    - `docker compose exec web python manage.py migrate`
 4. Create superuser:
    - `docker compose exec web python manage.py createsuperuser`
+
+## Temporary Local Fallback (No Docker)
+1. Install dependencies:
+   - `python -m pip install -r backend/requirements.txt`
+   - `python -m pip install -r ml_services/requirements.txt`
+2. Apply local migrations (SQLite profile):
+   - `python backend/manage.py migrate --settings=sentinelke.settings_local --noinput`
+3. Start local services:
+   - `powershell -ExecutionPolicy Bypass -File .\scripts\start_local_stack.ps1`
+4. Check health:
+   - `powershell -ExecutionPolicy Bypass -File .\scripts\check_local_stack.ps1`
+5. Stop services:
+   - `powershell -ExecutionPolicy Bypass -File .\scripts\stop_local_stack.ps1`
 
 ## Testing
 - `python backend/manage.py test apps.core.tests apps.compliance.tests --settings=sentinelke.settings_test`
