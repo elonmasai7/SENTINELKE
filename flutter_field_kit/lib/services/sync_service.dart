@@ -11,7 +11,7 @@ class SyncService {
 
   Future<bool> syncIncident(Map<String, dynamic> payload, String token) async {
     final response = await http.post(
-      Uri.parse('$apiBaseUrl/api/geo/incidents/'),
+      Uri.parse('$apiBaseUrl/api/field-ops/offline-sync-logs/'),
       headers: {
         'Authorization': 'Token $token',
         'Content-Type': 'application/json',

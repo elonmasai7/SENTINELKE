@@ -74,3 +74,20 @@ SentinelKE is a compliance-first national security and intelligence coordination
 - `/api/field-ops/`
 - `/api/federation/`
 - `/api/ai/`
+
+## Mobile and Desktop Client Testing
+1. Install Flutter SDK and add lutter to PATH.
+2. From lutter_field_kit initialize platforms if not present:
+   - lutter create .
+3. Run tests:
+   - lutter test
+
+## Desktop App Mode (Flutter)
+- Start desktop client:
+  - un_desktop.bat
+- This launches Flutter Windows target (native desktop), not a web UI.
+
+## Mobile App Mode (Flutter)
+- Start mobile client:
+  - un_mobile.bat
+- Uses Android target by default (lutter run -d android).
