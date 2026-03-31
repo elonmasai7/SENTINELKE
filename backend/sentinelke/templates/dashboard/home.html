@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-md-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h3>Operational Dashboard</h3>
+        <p>Compliance-enforced intelligence coordination for authorized agencies.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <h5>Cases</h5>
+        <p class="display-6">{{ counts.cases }}</p>
+      </div>
+    </div>
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5>Agencies</h5>
+        <p class="display-6">{{ counts.agencies }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,8 @@
+body {
+  background: linear-gradient(135deg, #f2f6fb 0%, #dde8f5 100%);
+  min-height: 100vh;
+}
+
+.card {
+  border: 0;
+}

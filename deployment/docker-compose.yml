@@ -1,0 +1,48 @@
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+    command: gunicorn sentinelke.asgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --workers 3
+    env_file:
+      - ../backend/.env.example
+    depends_on:
+      - db
+      - neo4j
+      - redis
+      - ml-service
+    volumes:
+      - ../backend:/app
+    ports:
+      - "8000:8000"
+
+  celery-worker:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+    command: celery -A sentinelke worker -l info
+    env_file:
+      - ../backend/.env.example
+    depends_on:
+      - web
+      - redis
+    volumes:
+      - ../backend:/app
+
+  ml-service:
+    build:
+      context: ..
+      dockerfile: ml_services/Dockerfile
+    ports:
+      - "9000:9000"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_DB: sentinelke
+      POSTGRES_USER
