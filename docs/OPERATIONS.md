@@ -29,3 +29,13 @@
 - Configure Africa's Talking callback URL to:
   `/api/integrations/ussd/africastalking/`
 - Validate source IP allow-list and signed headers at ingress.
+
+## V2 Service Topology
+- web: Django ASGI API + templates
+- celery-worker: async AI/report/redaction/federation task execution
+- edis: broker/result backend/channel layer
+- ml-service: FastAPI summarization/synthetic-media/transcription stubs
+
+## Compliance Gate
+- For sensitive V2 modules, warrant.authorized_scope is validated against requested operation scope. Out-of-scope requests are blocked at API layer.
+

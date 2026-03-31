@@ -13,4 +13,10 @@ urlpatterns = [
     path('api/fraud/', include('apps.fraud.urls')),
     path('api/surveillance/', include('apps.surveillance.urls')),
     path('api/collaboration/', include('apps.collaboration.urls')),
+    path('api/ai-intelligence/', include('apps.ai_intelligence.urls')),
+    path('api/operations/', include('apps.operations.urls')),
+    path('api/forensics-advanced/', include('apps.forensics_advanced.urls')),
+    path('api/biometrics/', include('apps.biometrics.urls')),
+    path('api/evidence-automation/', include('apps.evidence_automation.urls')),
+    path('api/federation/', include('apps.federation.urls')),
 ]

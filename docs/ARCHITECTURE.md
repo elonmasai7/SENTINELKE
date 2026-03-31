@@ -37,3 +37,13 @@
 - No jailbreak tooling.
 - No password-cracking engines.
 - Integrations only with certified lawful systems.
+
+## V2 Expansion
+- AI intelligence app adds pattern-of-life baselining, predictive risk scoring, NLP summary records, and synthetic media scan records.
+- Operations app adds live asset positions, AR overlay APIs, multilingual transcript storage, and joint task workspaces with WebSocket fan-out.
+- Forensics advanced adds crypto transaction intelligence, IoT forensic ingestion, and cloud legal hold orchestration.
+- Biometrics app adds multi-modal identity fusion (warrant-gated) and behavioral biometric profiles.
+- Evidence automation adds private-ledger hash anchoring, court-report artifacts, and redaction job control plane.
+- Field ops adds drone feed metadata and offline sync integrity logs with cryptographic signatures.
+- Federation app adds federated search orchestration and international exchange audit trails.
+

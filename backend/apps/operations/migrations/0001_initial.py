@@ -1,7 +1,6 @@
 from django.db import migrations, models
 import django.db.models.deletion
 from django.conf import settings
-import django.contrib.gis.db.models.fields
 
 
 class Migration(migrations.Migration):
@@ -32,7 +31,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('asset_type', models.CharField(max_length=64)),
                 ('identifier', models.CharField(max_length=120)),
-                ('location', django.contrib.gis.db.models.fields.PointField(geography=True, srid=4326)),
+                ('location', models.JSONField(blank=True, default=dict)),
                 ('observed_at', models.DateTimeField()),
                 ('threat_overlay', models.JSONField(blank=True, default=dict)),
                 ('case', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='live_positions', to='core.case')),

@@ -3,7 +3,6 @@ from .settings import *
 EXCLUDED_APPS = {
     'django.contrib.gis',
     'apps.geo',
-    'apps.operations',
     'apps.field_ops',
 }
 

@@ -9,10 +9,34 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Field Operations')),
       body: ListView(
         padding: const EdgeInsets.all(16),
-        children: const [
-          Card(child: ListTile(title: Text('Report Incident'), subtitle: Text('Capture notes, media, and GPS tag'))),
-          Card(child: ListTile(title: Text('Queued Sync Items'), subtitle: Text('Offline-first encrypted upload queue'))),
-          Card(child: ListTile(title: Text('Emergency Alert'), subtitle: Text('Priority dispatch channel'))),
+        children: [
+          Card(
+            child: ListTile(
+              title: const Text('Live Command Dashboard'),
+              subtitle: const Text('Asset and incident stream with threat overlays'),
+              onTap: () => Navigator.pushNamed(context, '/ops-live'),
+            ),
+          ),
+          Card(
+            child: ListTile(
+              title: const Text('AI Threat Alerts'),
+              subtitle: const Text('Pattern-of-life and predictive threat notifications'),
+              onTap: () => Navigator.pushNamed(context, '/ai-alerts'),
+            ),
+          ),
+          Card(
+            child: ListTile(
+              title: const Text('Joint Workspace'),
+              subtitle: const Text('Case notes and inter-agency collaboration channel'),
+              onTap: () => Navigator.pushNamed(context, '/workspace'),
+            ),
+          ),
+          const Card(
+            child: ListTile(
+              title: Text('Offline Integrity Queue'),
+              subtitle: Text('Cryptographically signed offline logs pending sync'),
+            ),
+          ),
         ],
       ),
     );

@@ -1,4 +1,4 @@
-from django.contrib.gis.db import models
+from django.db import models
 from django.contrib.auth import get_user_model
 
 from apps.compliance.models import Warrant
@@ -11,7 +11,7 @@ class LiveAssetPosition(models.Model):
     case = models.ForeignKey(Case, on_delete=models.CASCADE, related_name='live_positions', null=True, blank=True)
     asset_type = models.CharField(max_length=64)
     identifier = models.CharField(max_length=120)
-    location = models.PointField(geography=True)
+    location = models.JSONField(default=dict, blank=True)
     observed_at = models.DateTimeField()
     threat_overlay = models.JSONField(default=dict, blank=True)
 

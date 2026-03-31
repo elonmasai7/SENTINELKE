@@ -1,46 +1,61 @@
 # SentinelKE
 
-SentinelKE is a compliance-first national security and intelligence coordination platform for authorized agencies. This repository provides a production-ready foundation focused on lawful workflows, judicial authorization, and immutable auditability.
+SentinelKE is a compliance-first national security and intelligence coordination platform for authorized agencies. This repository now includes V2 advanced intelligence expansion modules with warrant-gated AI workflows, federated collaboration, and forensic automation.
 
 ## Included Components
 - Django + DRF backend with modular security domain apps
 - Django template dashboard (Bootstrap 5, no JS frameworks)
 - Lawful forensics and intercept integration adapters (API-based)
 - USSD intake endpoint for Africa's Talking
-- Flutter field kit skeleton (offline queue + secure sync stubs)
-- Dockerized deployment with PostGIS, Neo4j, Gunicorn, and Nginx
+- Flutter field kit with live ops, AI alert, and workspace screens
+- Dockerized deployment with PostGIS, Neo4j, Redis, Celery, Gunicorn/Uvicorn, and Nginx
+- Python ML microservice stubs (summarization, synthetic media checks, transcription/translation)
+
+## V2 Modules
+- `apps/ai_intelligence`: pattern-of-life, predictive scoring, summarization records, synthetic media scans
+- `apps/operations`: live command feed, AR overlay packets, translation/transcription records, joint workspaces
+- `apps/forensics_advanced`: crypto tracing records, IoT artifacts, cloud legal holds
+- `apps/biometrics`: multi-modal fusion queries, behavioral biometrics
+- `apps/evidence_automation`: integrity anchoring, automated reports, witness redaction jobs
+- `apps/field_ops`: drone feed metadata and offline sync integrity logs
+- `apps/federation`: federated query gateway and international exchange logs
+
+## Compliance Enforcement
+- Sensitive V2 endpoints require an active warrant tied to the case.
+- Scope/proportionality validation blocks operations that exceed warrant authorization.
+- Object-level RBAC enforces agency scope, assignment, and case clearance thresholds.
+- Audit records remain cryptographically signed.
 
 ## Quick Start
 1. Copy `backend/.env.example` to `.env` and set production secrets.
 2. Start stack:
    - `cd deployment`
    - `docker compose up --build`
-3. Create superuser:
+3. Apply migrations:
+   - `docker compose exec web python manage.py migrate`
+4. Create superuser:
    - `docker compose exec web python manage.py createsuperuser`
 
 ## Testing
-- Use the test settings profile that excludes GIS runtime dependencies:
-  - `python backend/manage.py test apps.core.tests apps.compliance.tests --settings=sentinelke.settings_test`
+- `python backend/manage.py test apps.core.tests apps.compliance.tests --settings=sentinelke.settings_test`
+
+## WebSocket
+- Live operations stream endpoint: `/ws/operations/live/`
 
 ## API Surface (high level)
-- `/api/core/` case and agency management
-- `/api/compliance/` warrants, approvals, retention
-- `/api/forensics/` seized devices, chain-of-custody, ingestion
-- `/api/intelligence/` reports, threat scoring, graph entities/relations
-- `/api/fraud/` transactions and risk alerts
-- `/api/geo/` incidents, geofences, alerts
-- `/api/surveillance/` warrant-gated surveillance requests
-- `/api/collaboration/` notes, secure messaging, evidence shares
-- `/api/integrations/` forensic ingest and USSD callback
-
-## Legal and Safety Posture
-- No unlawful exploit capabilities are implemented.
-- Sensitive surveillance workflows require active warrant linkage.
-- RBAC is enforced by agency scope, assignment, and minimum clearance level.
-- Audit records are cryptographically signed and immutable by design.
-
-## Next Engineering Steps
-- Extend ABAC policies with purpose-limitation and need-to-know attributes.
-- Implement asynchronous ETL pipeline for bulk intelligence feeds.
-- Add production SIEM, metrics, health probes, and disaster recovery runbooks.
-- Complete Flutter biometric + secure enclave key management.
+- `/api/core/`
+- `/api/compliance/`
+- `/api/forensics/`
+- `/api/intelligence/`
+- `/api/fraud/`
+- `/api/geo/`
+- `/api/surveillance/`
+- `/api/collaboration/`
+- `/api/integrations/`
+- `/api/ai-intelligence/`
+- `/api/operations/`
+- `/api/forensics-advanced/`
+- `/api/biometrics/`
+- `/api/evidence-automation/`
+- `/api/field-ops/`
+- `/api/federation/`
