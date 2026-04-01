@@ -1,27 +1,321 @@
 {% extends "base.html" %}
+{% load static %}
+{% block extra_head %}
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+  crossorigin=""
+>
+{% endblock %}
 {% block content %}
-<div class="row g-4">
-  <div class="col-md-8">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h3>Operational Dashboard</h3>
-        <p>Compliance-enforced intelligence coordination for authorized agencies.</p>
-      </div>
+<div class="dashboard-page">
+  <div class="row g-4 mb-1">
+    <div class="col-12 col-md-6 col-xl-3">
+      <section class="intel-card kpi-card">
+        <div class="panel-label">Active Cases</div>
+        <div class="kpi-value">{{ active_cases }}</div>
+        <div class="kpi-meta">+{{ today_case_delta }} today</div>
+      </section>
+    </div>
+    <div class="col-12 col-md-6 col-xl-3">
+      <section class="intel-card kpi-card">
+        <div class="panel-label">Threat Alerts</div>
+        <div class="kpi-stack">
+          <div><span class="severity severity-critical">Critical</span> {{ critical_alerts }}</div>
+          <div><span class="severity severity-high">High</span> {{ high_alerts }}</div>
+        </div>
+      </section>
+    </div>
+    <div class="col-12 col-md-6 col-xl-3">
+      <section class="intel-card kpi-card">
+        <div class="panel-label">Field Units Online</div>
+        <div class="kpi-value">{{ live_officers }}</div>
+        <div class="kpi-meta">{{ live_drones }} drones</div>
+      </section>
+    </div>
+    <div class="col-12 col-md-6 col-xl-3">
+      <section class="intel-card kpi-card">
+        <div class="panel-label">AI Risk Avg</div>
+        <div class="kpi-value">{{ average_ai_risk }}<span class="kpi-slash">/100</span></div>
+        <div class="kpi-meta">Continuous multi-provider scoring</div>
+      </section>
     </div>
   </div>
-  <div class="col-md-4">
-    <div class="card shadow-sm mb-3">
-      <div class="card-body">
-        <h5>Cases</h5>
-        <p class="display-6">{{ counts.cases }}</p>
-      </div>
+
+  <div class="row g-4 mb-1">
+    <div class="col-12 col-xl-8">
+      <section class="intel-card panel-tall">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Live Geo Intelligence Map</div>
+            <div class="panel-subtitle">PostGIS + Leaflet command picture with watchlist and patrol overlays</div>
+          </div>
+          <div class="panel-badge">Priority Panel</div>
+        </div>
+        <div class="map-stage" id="intel-map-shell">
+          <div id="intelMap" class="live-map"></div>
+          <div class="map-overlay">
+            {% for layer in map_layers %}
+            <span>{{ layer }}</span>
+            {% endfor %}
+          </div>
+        </div>
+      </section>
     </div>
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h5>Agencies</h5>
-        <p class="display-6">{{ counts.agencies }}</p>
-      </div>
+    <div class="col-12 col-xl-4">
+      <section class="intel-card panel-tall">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Live Alert Feed</div>
+            <div class="panel-subtitle">Real-time warrant-aware event scroll</div>
+          </div>
+        </div>
+        <div class="alert-feed">
+          {% for alert in live_alert_feed %}
+          <div class="alert-item">
+            <div class="alert-topline">
+              <span class="severity severity-{{ alert.level|lower }}">[{{ alert.level }}]</span>
+              <span class="alert-location">{{ alert.location }}</span>
+            </div>
+            <div class="alert-text">{{ alert.message }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-1">
+    <div class="col-12 col-xl-6">
+      <section class="intel-card">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Threat Network Graph</div>
+            <div class="panel-subtitle">Neo4j-linked suspects, devices, locations, vehicles, and wallets</div>
+          </div>
+        </div>
+        <div class="network-graph" id="networkGraph"></div>
+        <div class="network-legend">
+          {% for node in network_nodes %}
+          <div class="network-legend-item">
+            <span class="legend-dot tone-{{ node.tone }}"></span>
+            <span>{{ node.label }}</span>
+            <strong>{{ node.count }}</strong>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+    <div class="col-12 col-xl-6">
+      <section class="intel-card">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">AI Analysis Panel</div>
+            <div class="panel-subtitle">Hybrid AI reasoning with explainable threat scoring</div>
+          </div>
+          <div class="score-pill">{{ threat_score }}/100</div>
+        </div>
+        <div class="analysis-layout">
+          <div class="analysis-reasons">
+            <div class="analysis-heading">Reason</div>
+            <ul class="analysis-list">
+              <li>movement anomaly</li>
+              <li>repeated wallet link</li>
+              <li>network proximity</li>
+            </ul>
+          </div>
+          <div class="analysis-actions">
+            <button class="btn btn-command">Run Claude Analysis</button>
+            <button class="btn btn-command">Run Local LLM</button>
+            <button class="btn btn-command">Generate Brief</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-1">
+    <div class="col-12 col-xl-6">
+      <section class="intel-card">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Active Cases</div>
+            <div class="panel-subtitle">High-risk command queue</div>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table command-table align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Case ID</th>
+                <th>Type</th>
+                <th>Risk</th>
+                <th>Officer</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for case in cases_table %}
+              <tr>
+                <td>{{ case.case_number }}</td>
+                <td>{{ case.title|truncatechars:14 }}</td>
+                <td><span class="risk-badge">{{ case.required_clearance|add:"70" }}</span></td>
+                <td>{{ case.created_by.username }}</td>
+                <td>{{ case.status }}</td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td>C-1024</td>
+                <td>Terror</td>
+                <td><span class="risk-badge">92</span></td>
+                <td>DCI-04</td>
+                <td>Active</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+    <div class="col-12 col-xl-6">
+      <section class="intel-card">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Forensics Operations</div>
+            <div class="panel-subtitle">Evidence extraction, cloud hold, and integrity flow</div>
+          </div>
+        </div>
+        <div class="forensics-grid">
+          <div class="mini-stat"><span>Seized devices</span><strong>{{ forensic_snapshot.seized_devices }}</strong></div>
+          <div class="mini-stat"><span>Extraction jobs</span><strong>{{ forensic_snapshot.extraction_jobs }}</strong></div>
+          <div class="mini-stat"><span>Cloud acquisitions</span><strong>{{ forensic_snapshot.cloud_acquisitions }}</strong></div>
+          <div class="mini-stat"><span>Evidence hashes</span><strong>{{ forensic_snapshot.evidence_hashes }}</strong></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-1">
+    <div class="col-12 col-xl-6">
+      <section class="intel-card">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Fraud Intelligence</div>
+            <div class="panel-subtitle">Anomaly trend, laundering indicators, and shell activity</div>
+          </div>
+        </div>
+        <div class="trend-chart">
+          <div class="trend-bars">
+            <span style="height: 32%"></span>
+            <span style="height: 48%"></span>
+            <span style="height: 61%"></span>
+            <span style="height: 54%"></span>
+            <span style="height: 72%"></span>
+            <span style="height: 68%"></span>
+            <span style="height: 86%"></span>
+          </div>
+          <div class="trend-legend">
+            {% for alert in fraud_alerts %}
+            <div class="legend-row">
+              <span>{{ alert.transaction.source_system }}</span>
+              <strong>{{ alert.risk_score|floatformat:0 }}</strong>
+            </div>
+            {% empty %}
+            <div class="legend-row"><span>Shell company graph</span><strong>Active</strong></div>
+            <div class="legend-row"><span>Laundering alerts</span><strong>12</strong></div>
+            {% endfor %}
+          </div>
+        </div>
+      </section>
+    </div>
+    <div class="col-12 col-xl-6">
+      <section class="intel-card">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Crypto Trace</div>
+            <div class="panel-subtitle">Wallet to mixer to exchange exposure paths</div>
+          </div>
+        </div>
+        <div class="crypto-flow">
+          <div class="crypto-node">Wallet</div>
+          <div class="crypto-arrow"></div>
+          <div class="crypto-node">Mixer</div>
+          <div class="crypto-arrow"></div>
+          <div class="crypto-node">Exchange</div>
+          <div class="crypto-arrow"></div>
+          <div class="crypto-node crypto-risk">Suspect</div>
+        </div>
+        <div class="cluster-list">
+          {% for cluster in wallet_clusters %}
+          <div class="cluster-row">
+            <span>{{ cluster.cluster_label }}</span>
+            <strong>{{ cluster.risk_score|floatformat:0 }}</strong>
+          </div>
+          {% empty %}
+          <div class="cluster-row"><span>Wallet cluster A</span><strong>88</strong></div>
+          <div class="cluster-row"><span>Wallet cluster B</span><strong>74</strong></div>
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-12">
+      <section class="intel-card">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">System Health + Audit + Compliance</div>
+            <div class="panel-subtitle">Service readiness, warrant posture, and signed audit trail</div>
+          </div>
+          <div class="generated-stamp">{{ generated_at|date:"H:i" }} EAT</div>
+        </div>
+        <div class="row g-4">
+          <div class="col-12 col-xl-5">
+            <div class="service-badges">
+              {% for service in service_health %}
+              <div class="service-badge">
+                <span>{{ service.name }}</span>
+                <span class="status-dot status-{{ service.status }}"></span>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="col-12 col-xl-3">
+            <div class="oversight-stats">
+              <div class="oversight-row"><span>Active warrants</span><strong>{{ compliance_snapshot.active_warrants }}</strong></div>
+              <div class="oversight-row"><span>Pending approvals</span><strong>{{ compliance_snapshot.pending_approvals }}</strong></div>
+              <div class="oversight-row"><span>Audit events</span><strong>{{ compliance_snapshot.audit_events }}</strong></div>
+            </div>
+          </div>
+          <div class="col-12 col-xl-4">
+            <div class="audit-feed">
+              {% for log in audit_logs %}
+              <div class="audit-row">
+                <span>{{ log.action }}</span>
+                <strong>{{ log.actor_username }}</strong>
+              </div>
+              {% empty %}
+              <div class="audit-row"><span>forensic_ingest</span><strong>ussd_gateway</strong></div>
+              <div class="audit-row"><span>warrant_review</span><strong>review_officer</strong></div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 </div>
+{% endblock %}
+{% block extra_scripts %}
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+  crossorigin=""
+></script>
+{{ map_positions|json_script:"dashboard-map-positions" }}
+{{ graph_nodes|json_script:"dashboard-graph-nodes" }}
+{{ graph_edges|json_script:"dashboard-graph-edges" }}
+<script src="{% static 'js/dashboard_live.js' %}?v=2"></script>
 {% endblock %}

@@ -1,3 +1,159 @@
+body {
+    background: #0f172a;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.main-content,
+.dashboard-main {
+    margin-left: 280px;
+    padding: 20px;
+}
+
+.card,
+.intel-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    margin-bottom: 20px;
+}
+
+.dashboard-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    background: rgba(17, 24, 39, 0.96);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.dashboard-shell {
+    min-height: 100vh;
+}
+
+.intel-card {
+    background: linear-gradient(180deg, rgba(19, 31, 54, 0.94), rgba(15, 23, 42, 0.98));
+    border: 1px solid rgba(255,255,255,0.06);
+    color: #ffffff;
+}
+
+.panel-title,
+.kpi-value,
+.navbar-brand {
+    color: #ffffff;
+}
+
+.panel-subtitle,
+.panel-label,
+.kpi-meta,
+.generated-stamp {
+    color: #cbd5e1;
+}
+
+.nav-chip,
+.agency-pill,
+.case-pill,
+.panel-badge,
+.score-pill,
+.risk-badge {
+    background: rgba(255,255,255,0.06);
+    color: #ffffff;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 999px;
+    padding: 0.35rem 0.75rem;
+}
+
+.search-shell {
+    flex: 1 1 auto;
+    max-width: 42rem;
+}
+
+.command-search {
+    background: #0b1220;
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #ffffff;
+}
+
+.command-search::placeholder {
+    color: #94a3b8;
+}
+
+.panel-tall,
+.map-stage,
+.live-map,
+.network-graph {
+    min-height: 320px;
+}
+
+.map-stage,
+.network-graph,
+.alert-item,
+.service-badge,
+.mini-stat,
+.oversight-row,
+.cluster-row,
+.audit-row,
+.legend-row,
+.network-legend-item {
+    background: rgba(15, 23, 42, 0.88);
+    border-radius: 16px;
+}
+
+.alert-item,
+.service-badge,
+.mini-stat,
+.oversight-row,
+.cluster-row,
+.audit-row,
+.legend-row,
+.network-legend-item {
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.table.command-table,
+.table.command-table th,
+.table.command-table td {
+    color: #ffffff;
+    background: transparent;
+}
+
+.table.command-table th,
+.table.command-table td {
+    border-color: rgba(255,255,255,0.08);
+}
+
+.btn-command {
+    background: #1d4ed8;
+    color: #ffffff;
+    border: 0;
+}
+
+.btn-command:hover {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.status-dot.status-green {
+    background: #22c55e;
+}
+
+.status-dot.status-amber {
+    background: #f59e0b;
+}
+
+.status-dot.status-red {
+    background: #ef4444;
+}
+
+.status-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+/* Legacy compatibility layer from previous dashboard stylesheet */
+
 :root {
   --bg-900: #08131b;
   --bg-850: #0d1c26;

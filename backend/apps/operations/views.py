@@ -27,7 +27,13 @@ class LiveAssetPositionViewSet(AuditedSecureModelViewSet):
         if channel_layer:
             async_to_sync(channel_layer.group_send)(
                 'operations_live',
-                {'type': 'operations.update', 'payload': LiveAssetPositionSerializer(obj).data},
+                {
+                    'type': 'operations.update',
+                    'payload': {
+                        'event': 'live_position',
+                        **LiveAssetPositionSerializer(obj).data,
+                    },
+                },
             )
 
 

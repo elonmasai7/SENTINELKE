@@ -1,9 +1,10 @@
 from django.contrib import admin
 from django.urls import include, path
-from apps.core.views import dashboard_home
+from apps.core.views import dashboard_home, static_health
 
 urlpatterns = [
     path('', dashboard_home, name='dashboard-home'),
+    path('system/static-health/', static_health, name='static-health'),
     path('admin/', admin.site.urls),
     path('api/core/', include('apps.core.urls')),
     path('api/audit/', include('apps.audit.urls')),
