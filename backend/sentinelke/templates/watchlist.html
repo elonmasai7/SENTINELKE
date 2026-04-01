@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}SentinelKE Watchlist{% endblock %}
+{% block content %}
+<section class="module-page">
+  <div class="module-hero intel-card mb-4">
+    <div class="panel-header align-items-center">
+      <div>
+        <div class="panel-title">{{ page_title }}</div>
+        <div class="panel-subtitle">{{ page_subtitle }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="row g-4">
+    <div class="col-12 col-xl-7">
+      <section class="intel-card h-100">
+        <div class="panel-header"><div><div class="panel-title">Watchlist Targets</div><div class="panel-subtitle">Operational watch entries with dedicated actions.</div></div></div>
+        <div class="audit-feed">
+          {% for entry in watchlist_entries %}
+          <div class="audit-row"><span>{{ entry.name }} | {{ entry.location }}</span><strong>{{ entry.status }}</strong></div>
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+    <div class="col-12 col-xl-5">
+      <section class="intel-card h-100">
+        <div class="panel-header"><div><div class="panel-title">Actions</div><div class="panel-subtitle">Each button returns a status and routes to the right workspace.</div></div></div>
+        <div class="analysis-actions">
+          <button class="btn btn-command tool-service-btn" data-tool-endpoint="{% url 'tool_action' 'watchlist' 'add-suspect' %}">Add Suspect</button>
+          <button class="btn btn-command tool-service-btn" data-tool-endpoint="{% url 'tool_action' 'watchlist' 'view-profile' %}">View Profile</button>
+          <button class="btn btn-command tool-service-btn" data-tool-endpoint="{% url 'tool_action' 'watchlist' 'flag-movement' %}">Flag Movement</button>
+          <button class="btn btn-command tool-service-btn" data-tool-endpoint="{% url 'tool_action' 'watchlist' 'link-devices' %}">Link Devices</button>
+        </div>
+        <div class="service-status-banner mt-3" id="watchlistStatusBanner">Watchlist actions ready.</div>
+      </section>
+    </div>
+  </div>
+</section>
+{% endblock %}

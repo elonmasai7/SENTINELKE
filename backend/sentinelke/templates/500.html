@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block title %}Server Error{% endblock %}
+{% block content %}
+<section class="module-page"><div class="intel-card text-center py-5"><div class="panel-title">Tool temporarily unavailable</div><div class="panel-subtitle mb-4">The service hit an internal error. Retry or review audit logs.</div><div class="d-flex gap-2 justify-content-center flex-wrap"><a class="btn btn-command" href="javascript:window.location.reload()">Retry</a><a class="btn btn-outline-light" href="{% url 'audit_logs' %}">View logs</a></div></div></section>
+{% endblock %}

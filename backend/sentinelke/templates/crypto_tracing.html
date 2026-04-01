@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}SentinelKE Crypto Tracing{% endblock %}
+{% block content %}
+<section class="module-page">
+  <div class="module-hero intel-card mb-4"><div class="panel-header align-items-center"><div><div class="panel-title">{{ page_title }}</div><div class="panel-subtitle">{{ page_subtitle }}</div></div><a class="btn btn-command" href="{% url 'network_graph' %}">Open Network Graph</a></div></div>
+  <div class="row g-4">
+    <div class="col-12 col-xl-7">
+      <section class="intel-card h-100">
+        <div class="panel-header"><div><div class="panel-title">Trace Workspace</div><div class="panel-subtitle">Wallet flow and exposure path.</div></div></div>
+        <div class="crypto-flow mb-4">
+          <div class="crypto-node">Wallet</div><div class="crypto-arrow"></div><div class="crypto-node">Mixer</div><div class="crypto-arrow"></div><div class="crypto-node">Exchange</div><div class="crypto-arrow"></div><div class="crypto-node crypto-risk">Suspect</div>
+        </div>
+        <div class="cluster-list">
+          {% for cluster in wallet_clusters %}
+          <div class="cluster-row"><span>{{ cluster.cluster_label }}</span><strong>{{ cluster.risk_score|floatformat:0 }}</strong></div>
+          {% empty %}
+          <div class="cluster-row"><span>Wallet cluster A</span><strong>88</strong></div>
+          <div class="cluster-row"><span>Wallet cluster B</span><strong>74</strong></div>
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+    <div class="col-12 col-xl-5">
+      <section class="intel-card h-100">
+        <div class="panel-header"><div><div class="panel-title">Actions</div><div class="panel-subtitle">Each action returns status feedback and the right redirect.</div></div></div>
+        <div class="analysis-actions">
+          <button class="btn btn-command tool-service-btn" data-tool-endpoint="{% url 'tool_action' 'crypto' 'search-wallet' %}">Search Wallet</button>
+          <button class="btn btn-command tool-service-btn" data-tool-endpoint="{% url 'tool_action' 'crypto' 'view-graph' %}">View Graph</button>
+          <button class="btn btn-command tool-service-btn" data-tool-endpoint="{% url 'tool_action' 'crypto' 'run-trace' %}">Run Trace</button>
+        </div>
+        <div class="service-status-banner mt-3" id="cryptoStatusBanner">Crypto actions ready.</div>
+      </section>
+    </div>
+  </div>
+</section>
+{% endblock %}

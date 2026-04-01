@@ -1,0 +1,55 @@
+<section class="module-page">
+  <div class="module-hero intel-card mb-4">
+    <div class="panel-header align-items-center">
+      <div>
+        <div class="panel-title">{{ page_title }}</div>
+        <div class="panel-subtitle">{{ page_subtitle }}</div>
+      </div>
+      <a class="btn btn-command" href="{% url 'dashboard' %}">Back to Dashboard</a>
+    </div>
+    <div class="row g-3 mt-1">
+      {% for card in feature_cards %}
+      <div class="col-12 col-md-4">
+        <div class="mini-stat h-100"><span>{{ card.label }}</span><strong>{{ card.value }}</strong></div>
+      </div>
+      {% empty %}
+      <div class="col-12 col-md-4"><div class="mini-stat h-100"><span>Active cases</span><strong>{{ active_cases }}</strong></div></div>
+      <div class="col-12 col-md-4"><div class="mini-stat h-100"><span>Critical alerts</span><strong>{{ critical_alerts }}</strong></div></div>
+      <div class="col-12 col-md-4"><div class="mini-stat h-100"><span>AI risk avg</span><strong>{{ average_ai_risk }}</strong></div></div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="row g-4">
+    <div class="col-12 col-xl-7">
+      <section class="intel-card h-100">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Operational Summary</div>
+            <div class="panel-subtitle">This page is now separated from the main dashboard so the workflow stays focused.</div>
+          </div>
+        </div>
+        <div class="service-badges module-list-grid">
+          <div class="service-badge"><span>Agency</span><strong>{{ agency_name }}</strong></div>
+          <div class="service-badge"><span>Case mode</span><strong>{{ case_mode }}</strong></div>
+          <div class="service-badge"><span>Live alerts</span><strong>{{ live_alert_feed|length }}</strong></div>
+          <div class="service-badge"><span>Generated</span><strong>{{ generated_at|date:"H:i" }} EAT</strong></div>
+        </div>
+      </section>
+    </div>
+    <div class="col-12 col-xl-5">
+      <section class="intel-card h-100">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Quick Access</div>
+            <div class="panel-subtitle">Use the dedicated pages below to continue the operation.</div>
+          </div>
+        </div>
+        <div class="analysis-actions">
+          <a class="btn btn-command" href="{% url 'cases' %}">Open Cases</a>
+          <a class="btn btn-command" href="{% url 'intelligence' %}">Open Threat Intelligence</a>
+          <a class="btn btn-command" href="{% url 'system_health' %}">Open System Health</a>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>

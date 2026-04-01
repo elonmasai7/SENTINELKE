@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}SentinelKE System Health{% endblock %}
+{% block content %}
+<section class="module-page">
+  <div class="module-hero intel-card mb-4"><div class="panel-header align-items-center"><div><div class="panel-title">{{ page_title }}</div><div class="panel-subtitle">{{ page_subtitle }}</div></div><a class="btn btn-command" href="{% url 'static-health' %}">Open Static Diagnostics</a></div></div>
+  <div class="row g-4">
+    <div class="col-12 col-xl-8">
+      <section class="intel-card">
+        <div class="panel-header"><div><div class="panel-title">Service Readiness</div><div class="panel-subtitle">All platform service badges in one place.</div></div></div>
+        <div class="service-badges module-list-grid">
+          {% for service in service_health %}
+          <div class="service-badge"><span>{{ service.name }}</span><span class="status-dot status-{{ service.status }}"></span></div>
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+    <div class="col-12 col-xl-4">
+      <section class="intel-card h-100">
+        <div class="panel-header"><div><div class="panel-title">Diagnostics</div><div class="panel-subtitle">Health and repair routes.</div></div></div>
+        <div class="analysis-actions">
+          <a class="btn btn-command" href="{% url 'static-health' %}">Static Health</a>
+          <a class="btn btn-command" href="{% url 'audit_logs' %}">View Logs</a>
+          <a class="btn btn-command" href="{% url 'settings' %}">Settings</a>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+{% endblock %}

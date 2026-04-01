@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}SentinelKE AI Assistant{% endblock %}
+{% block content %}
+<section class="module-page">
+  <div class="module-hero intel-card mb-4">
+    <div class="panel-header align-items-center">
+      <div>
+        <div class="panel-title">{{ page_title }}</div>
+        <div class="panel-subtitle">{{ page_subtitle }}</div>
+      </div>
+      <a class="btn btn-command" href="{% url 'cases' %}">Open Cases</a>
+    </div>
+  </div>
+  <div class="row g-4">
+    <div class="col-12 col-xl-7">
+      <section class="intel-card h-100">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">AI Service Console</div>
+            <div class="panel-subtitle">Each named button is connected to its intended backend endpoint.</div>
+          </div>
+        </div>
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <label class="form-label">Case</label>
+            <select class="form-select" id="aiCaseId">
+              <option value="">Optional case context</option>
+              {% for case in case_choices %}
+              <option value="{{ case.id }}"{% if default_case and default_case.id == case.id %} selected{% endif %}>{{ case.case_number }} - {{ case.title }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label">Sensitivity</label>
+            <select class="form-select" id="aiSensitivity">
+              <option value="public">Public</option>
+              <option value="restricted" selected>Restricted</option>
+              <option value="classified">Classified</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Report Text / Prompt</label>
+            <textarea class="form-control" id="aiReportText" rows="4">Summarize the current operational picture and highlight the top escalation drivers.</textarea>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label">Entity ID</label>
+            <input class="form-control" id="aiEntityId" value="entity-case-nexus">
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label">Voice Query</label>
+            <input class="form-control" id="aiVoiceQuery" value="Show high-risk movements linked to active cases.">
+          </div>
+        </div>
+        <div class="analysis-actions mt-4">
+          <button class="btn btn-command ai-service-btn" data-ai-endpoint="/api/ai/summarize" data-ai-action="summary" type="button">Run Summary</button>
+          <button class="btn btn-command ai-service-btn" data-ai-endpoint="/api/ai/threat-analysis" data-ai-action="threat" type="button">Threat Analysis</button>
+          <button class="btn btn-command ai-service-btn" data-ai-endpoint="/api/ai/case-brief" data-ai-action="brief" type="button">Generate Brief</button>
+          <button class="btn btn-command ai-service-btn" data-ai-endpoint="/api/ai/voice-query" data-ai-action="voice" type="button">Voice Query</button>
+        </div>
+      </section>
+    </div>
+    <div class="col-12 col-xl-5">
+      <section class="intel-card h-100">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Response Output</div>
+            <div class="panel-subtitle">Success and error feedback appear here with retry guidance.</div>
+          </div>
+        </div>
+        <div class="service-status-banner" id="aiStatusBanner">Ready to run an AI task.</div>
+        <pre class="dashboard-action-output mt-3" id="aiActionOutput">No request has been sent yet.</pre>
+      </section>
+    </div>
+  </div>
+</section>
+{% endblock %}

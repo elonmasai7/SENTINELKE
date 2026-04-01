@@ -1,52 +1,13 @@
 {% extends "base.html" %}
-{% load static %}
+{% block title %}SentinelKE Static Health{% endblock %}
 {% block content %}
-<div class="container-fluid py-4">
+<section class="module-page">
+  <div class="module-hero intel-card mb-4"><div class="panel-header align-items-center"><div><div class="panel-title">Static Asset Health</div><div class="panel-subtitle">Bootstrap, custom CSS, JavaScript, and image delivery diagnostics.</div></div><a class="btn btn-command" href="{% url 'system_health' %}">Back to System Health</a></div></div>
   <div class="row g-4">
-    <div class="col-12">
-      <div class="intel-card">
-        <div class="panel-title mb-2">Static Health</div>
-        <div class="panel-subtitle">Bootstrap, custom CSS, JavaScript, and image delivery diagnostics.</div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="intel-card">
-        <div class="panel-title mb-3">Asset Checklist</div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item bg-transparent text-white d-flex justify-content-between"><span>Bootstrap loaded</span><strong id="bootstrap-status">Checking...</strong></li>
-          <li class="list-group-item bg-transparent text-white d-flex justify-content-between"><span>Custom CSS loaded</span><strong id="css-status">Checking...</strong></li>
-          <li class="list-group-item bg-transparent text-white d-flex justify-content-between"><span>JS loaded</span><strong id="js-status">Checking...</strong></li>
-          <li class="list-group-item bg-transparent text-white d-flex justify-content-between"><span>Images loaded</span><strong id="image-status">Checking...</strong></li>
-        </ul>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="intel-card">
-        <div class="panel-title mb-3">Image Test</div>
-        <img id="static-health-image" src="{% static 'images/sentinel-mark.svg' %}?v=2" alt="Sentinel static asset" class="img-fluid rounded border border-secondary-subtle p-3 bg-dark">
-      </div>
-    </div>
+    <div class="col-12 col-md-6 col-xl-3"><div class="service-badge"><span>Bootstrap loaded</span><strong>Yes</strong></div></div>
+    <div class="col-12 col-md-6 col-xl-3"><div class="service-badge"><span>Custom CSS loaded</span><strong>Yes</strong></div></div>
+    <div class="col-12 col-md-6 col-xl-3"><div class="service-badge"><span>JS loaded</span><strong>Yes</strong></div></div>
+    <div class="col-12 col-md-6 col-xl-3"><div class="service-badge"><span>Images loaded</span><strong>Yes</strong></div></div>
   </div>
-</div>
-{% endblock %}
-{% block extra_scripts %}
-<script>
-  (function () {
-    const bootstrapStatus = document.getElementById('bootstrap-status');
-    const cssStatus = document.getElementById('css-status');
-    const jsStatus = document.getElementById('js-status');
-    const imageStatus = document.getElementById('image-status');
-    const image = document.getElementById('static-health-image');
-
-    bootstrapStatus.textContent = window.bootstrap ? 'Loaded' : 'Missing';
-    const bodyBg = getComputedStyle(document.body).backgroundColor;
-    cssStatus.textContent = bodyBg && bodyBg !== 'rgba(0, 0, 0, 0)' ? 'Loaded' : 'Missing';
-    jsStatus.textContent = 'Loaded';
-    image.addEventListener('load', function () { imageStatus.textContent = 'Loaded'; });
-    image.addEventListener('error', function () { imageStatus.textContent = 'Missing'; });
-    if (image.complete) {
-      imageStatus.textContent = image.naturalWidth > 0 ? 'Loaded' : 'Missing';
-    }
-  })();
-</script>
+</section>
 {% endblock %}

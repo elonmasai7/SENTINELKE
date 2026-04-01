@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}SentinelKE Dashboard{% endblock %}
+{% block content %}
+<section class="module-page">
+  <div class="module-hero intel-card mb-4">
+    <div class="panel-header align-items-center">
+      <div>
+        <div class="panel-title">{{ page_title }}</div>
+        <div class="panel-subtitle">{{ page_subtitle }}</div>
+      </div>
+      <a class="btn btn-command" href="{% url 'system_health' %}">View System Health</a>
+    </div>
+  </div>
+  <div class="row g-4 mb-4">
+    {% for card in overview_cards %}
+    <div class="col-12 col-md-6 col-xl-3">
+      <a class="text-decoration-none" href="{% url card.route %}">
+        <section class="intel-card kpi-card h-100">
+          <div class="panel-label">{{ card.title }}</div>
+          <div class="kpi-value">{{ card.value }}</div>
+          <div class="kpi-meta">{{ card.meta }}</div>
+        </section>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="row g-4">
+    {% for tile in command_tiles %}
+    <div class="col-12 col-md-6 col-xl-4">
+      <section class="intel-card h-100 command-tile">
+        <div class="panel-title">{{ tile.title }}</div>
+        <div class="panel-subtitle mb-4">{{ tile.description }}</div>
+        <a class="btn btn-command mt-auto" href="{% url tile.route %}">{{ tile.button }}</a>
+      </section>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

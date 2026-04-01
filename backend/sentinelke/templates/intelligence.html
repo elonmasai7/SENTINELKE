@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+{% endblock %}
+{% block title %}SentinelKE Threat Intelligence{% endblock %}
+{% block content %}
+<section class="module-page">
+  <div class="module-hero intel-card mb-4">
+    <div class="panel-header align-items-center">
+      <div>
+        <div class="panel-title">{{ page_title }}</div>
+        <div class="panel-subtitle">{{ page_subtitle }}</div>
+      </div>
+      <a class="btn btn-command" href="{% url 'watchlist' %}">Open Watchlist</a>
+    </div>
+  </div>
+  <div class="row g-4">
+    <div class="col-12 col-xl-8">
+      <section class="intel-card panel-tall">
+        <div class="panel-header"><div><div class="panel-title">Live Geo Intelligence Map</div><div class="panel-subtitle">Dedicated map workspace separated from the overview dashboard.</div></div></div>
+        <div class="map-stage"><div id="intelMap" class="live-map"></div></div>
+      </section>
+    </div>
+    <div class="col-12 col-xl-4">
+      <section class="intel-card panel-tall">
+        <div class="panel-header"><div><div class="panel-title">Live Alert Feed</div><div class="panel-subtitle">Active intelligence alerts.</div></div></div>
+        <div class="alert-feed">
+          {% for alert in live_alert_feed %}
+          <div class="alert-item"><div class="alert-topline"><span class="severity severity-{{ alert.level|lower }}">[{{ alert.level }}]</span><span class="alert-location">{{ alert.location }}</span></div><div class="alert-text">{{ alert.message }}</div></div>
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block extra_scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+{{ map_positions|json_script:"dashboard-map-positions" }}
+{{ graph_nodes|json_script:"dashboard-graph-nodes" }}
+{{ graph_edges|json_script:"dashboard-graph-edges" }}
+<script src="{% static 'js/dashboard_live.js' %}?v=4"></script>
+{% endblock %}

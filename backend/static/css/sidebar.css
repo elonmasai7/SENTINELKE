@@ -27,6 +27,11 @@
     background: #1f2937;
 }
 
+.sidebar-link {
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
 .sidebar-section {
     margin-bottom: 12px;
 }

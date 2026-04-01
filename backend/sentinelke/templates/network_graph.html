@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}SentinelKE Network Graph{% endblock %}
+{% block content %}
+<section class="module-page">
+  <div class="module-hero intel-card mb-4">
+    <div class="panel-header align-items-center">
+      <div>
+        <div class="panel-title">{{ page_title }}</div>
+        <div class="panel-subtitle">{{ page_subtitle }}</div>
+      </div>
+      <a class="btn btn-command" href="{% url 'crypto_tracing' %}">Open Crypto Tracing</a>
+    </div>
+  </div>
+  <section class="intel-card">
+    <div class="panel-header"><div><div class="panel-title">Threat Network Graph</div><div class="panel-subtitle">Relationship view with dedicated screen space.</div></div></div>
+    <div class="network-graph" id="networkGraph"></div>
+    <div class="network-legend mt-3">
+      {% for node in network_nodes %}
+      <div class="network-legend-item"><span><span class="legend-dot tone-{{ node.tone }}"></span>{{ node.label }}</span><strong>{{ node.count }}</strong></div>
+      {% endfor %}
+    </div>
+  </section>
+</section>
+{% endblock %}
+{% block extra_scripts %}
+{{ map_positions|json_script:"dashboard-map-positions" }}
+{{ graph_nodes|json_script:"dashboard-graph-nodes" }}
+{{ graph_edges|json_script:"dashboard-graph-edges" }}
+<script src="{% static 'js/dashboard_live.js' %}?v=4"></script>
+{% endblock %}

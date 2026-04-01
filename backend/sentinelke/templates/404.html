@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block title %}Not Found{% endblock %}
+{% block content %}
+<section class="module-page"><div class="intel-card text-center py-5"><div class="panel-title">Page not found</div><div class="panel-subtitle mb-4">The requested route {{ requested_path|default:"" }} could not be found.</div><a class="btn btn-command" href="{% url 'dashboard' %}">Return to Dashboard</a></div></section>
+{% endblock %}

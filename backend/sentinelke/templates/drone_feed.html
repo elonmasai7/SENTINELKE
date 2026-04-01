@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}SentinelKE Drone Feed{% endblock %}
+{% block content %}
+<section class="module-page">
+  <div class="module-hero intel-card mb-4"><div class="panel-header align-items-center"><div><div class="panel-title">{{ page_title }}</div><div class="panel-subtitle">{{ page_subtitle }}</div></div><a class="btn btn-command" href="{% url 'field_ops' %}">Open Field Ops</a></div></div>
+  <div class="row g-4">
+    <div class="col-12 col-xl-7">
+      <section class="intel-card h-100">
+        <div class="panel-header"><div><div class="panel-title">Patrol Feed</div><div class="panel-subtitle">Dedicated drone operations panel.</div></div></div>
+        <div class="service-badges module-list-grid">
+          <div class="service-badge"><span>Drones live</span><strong>{{ live_drones }}</strong></div>
+          <div class="service-badge"><span>Tracked routes</span><strong>7</strong></div>
+          <div class="service-badge"><span>Watch corridors</span><strong>4</strong></div>
+          <div class="service-badge"><span>Escalations</span><strong>{{ critical_alerts }}</strong></div>
+        </div>
+      </section>
+    </div>
+    <div class="col-12 col-xl-5">
+      <section class="intel-card h-100">
+        <div class="panel-header"><div><div class="panel-title">Actions</div><div class="panel-subtitle">Drone buttons are now connected.</div></div></div>
+        <div class="analysis-actions">
+          <button class="btn btn-command tool-service-btn" data-tool-endpoint="{% url 'tool_action' 'drone' 'open-live-feed' %}">Open Live Feed</button>
+          <button class="btn btn-command tool-service-btn" data-tool-endpoint="{% url 'tool_action' 'drone' 'view-routes' %}">View Routes</button>
+          <button class="btn btn-command tool-service-btn" data-tool-endpoint="{% url 'tool_action' 'drone' 'assign-patrol' %}">Assign Patrol</button>
+        </div>
+        <div class="service-status-banner mt-3" id="droneStatusBanner">Drone actions ready.</div>
+      </section>
+    </div>
+  </div>
+</section>
+{% endblock %}

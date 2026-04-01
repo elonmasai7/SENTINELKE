@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block title %}SentinelKE Cases{% endblock %}
+{% block content %}
+<section class="module-page">
+  <div class="module-hero intel-card mb-4">
+    <div class="panel-header align-items-center">
+      <div>
+        <div class="panel-title">{{ page_title }}</div>
+        <div class="panel-subtitle">{{ page_subtitle }}</div>
+      </div>
+      <div class="d-flex gap-2 flex-wrap">
+        <button class="btn btn-command" data-bs-toggle="modal" data-bs-target="#createCaseModal">Create Case</button>
+        <button class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#assignOfficerModal">Assign Officer</button>
+      </div>
+    </div>
+  </div>
+  <div class="row g-4">
+    <div class="col-12 col-xl-8">
+      <section class="intel-card">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Case Queue</div>
+            <div class="panel-subtitle">Every row has a working action path.</div>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table command-table align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Case ID</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Officer</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for case in case_choices %}
+              <tr{% if selected_case and selected_case.id == case.id %} class="table-active"{% endif %}>
+                <td>{{ case.case_number }}</td>
+                <td>{{ case.title }}</td>
+                <td>{{ case.get_status_display }}</td>
+                <td>{% firstof case.created_by.username "Unassigned" %}</td>
+                <td>
+                  <div class="d-flex gap-2 flex-wrap">
+                    <form method="post" action="{% url 'cases-action' 'open' %}" class="inline-action-form">
+                      {% csrf_token %}
+                      <input type="hidden" name="case_id" value="{{ case.id }}">
+                      <button class="btn btn-sm btn-command" type="submit">Open Case</button>
+                    </form>
+                    <a class="btn btn-sm btn-outline-light" href="{% url 'cases' %}?selected={{ case.id }}">View</a>
+                    <form method="post" action="{% url 'cases-action' 'close' %}" class="inline-action-form">
+                      {% csrf_token %}
+                      <input type="hidden" name="case_id" value="{{ case.id }}">
+                      <button class="btn btn-sm btn-outline-danger" type="submit">Close Case</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="5">No cases available yet. Use Create Case to start one.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+    <div class="col-12 col-xl-4">
+      <section class="intel-card h-100">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Selected Case</div>
+            <div class="panel-subtitle">Open, assign, or close from this focused panel.</div>
+          </div>
+        </div>
+        {% if selected_case %}
+        <div class="oversight-stats">
+          <div class="oversight-row"><span>Case</span><strong>{{ selected_case.case_number }}</strong></div>
+          <div class="oversight-row"><span>Title</span><strong>{{ selected_case.title }}</strong></div>
+          <div class="oversight-row"><span>Status</span><strong>{{ selected_case.get_status_display }}</strong></div>
+          <div class="oversight-row"><span>Classification</span><strong>{{ selected_case.classification }}</strong></div>
+          <div class="oversight-row"><span>Summary</span><strong class="text-wrap text-end">{{ selected_case.summary|truncatechars:90 }}</strong></div>
+        </div>
+        {% else %}
+        <div class="service-status-banner error">Tool temporarily unavailable. No case is selected.</div>
+        {% endif %}
+      </section>
+    </div>
+  </div>
+</section>
+
+<div class="modal fade" id="createCaseModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content bg-dark text-white border border-secondary">
+      <form method="post" action="{% url 'cases-action' 'create' %}" class="modal-form">
+        {% csrf_token %}
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title">Create Case</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label">Title</label>
+              <input class="form-control" name="title" required>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Summary</label>
+              <textarea class="form-control" name="summary" rows="4" required></textarea>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">Classification</label>
+              <select class="form-select" name="classification">
+                <option>RESTRICTED</option>
+                <option>CONFIDENTIAL</option>
+                <option>SECRET</option>
+              </select>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">Required clearance</label>
+              <input class="form-control" type="number" name="required_clearance" min="1" max="5" value="2">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button class="btn btn-command" type="submit">Create Case</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="assignOfficerModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-white border border-secondary">
+      <form method="post" action="{% url 'cases-action' 'assign' %}" class="modal-form">
+        {% csrf_token %}
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title">Assign Officer</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Case</label>
+            <select class="form-select" name="case_id" required>
+              {% for case in case_choices %}
+              <option value="{{ case.id }}"{% if selected_case and selected_case.id == case.id %} selected{% endif %}>{{ case.case_number }} - {{ case.title }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Officer</label>
+            <select class="form-select" name="officer_id">
+              {% for officer in officer_choices %}
+              <option value="{{ officer.id }}">{{ officer.username }}</option>
+              {% empty %}
+              <option value="">No officers available</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button class="btn btn-command" type="submit">Assign Officer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
