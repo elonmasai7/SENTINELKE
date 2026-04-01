@@ -13,7 +13,7 @@ a = Analysis(
     pathex=[str(project_root)],
     binaries=[],
     datas=[
-        (str(project_root / '.env.desktop'), '.'),
+        (str(project_root / '.env.desktop.example'), '.'),
         (str(project_root / 'backend'), 'backend'),
         (str(project_root / 'ml_services'), 'ml_services'),
         (str(project_root / 'services' / 'ussd_service'), 'services/ussd_service'),

@@ -28,9 +28,8 @@ SentinelKE is a compliance-first national security and intelligence coordination
 - Audit records remain cryptographically signed.
 
 ## Quick Start (Docker)
-1. Copy `backend/.env.example` to `.env` and set production secrets.
+1. Copy `.env.prod.example` to `.env.prod` and set production secrets.
 2. Start stack:
-   - `cd deployment`
    - `docker compose up --build`
 3. Apply migrations:
    - `docker compose exec web python manage.py migrate`
@@ -38,16 +37,17 @@ SentinelKE is a compliance-first national security and intelligence coordination
    - `docker compose exec web python manage.py createsuperuser`
 
 ## Temporary Local Fallback (No Docker)
-1. Install dependencies:
+1. Copy `.env.dev.example` to `.env.dev`.
+2. Install dependencies:
    - `python -m pip install -r backend/requirements.txt`
    - `python -m pip install -r ml_services/requirements.txt`
-2. Apply local migrations (SQLite profile):
+3. Apply local migrations (SQLite profile):
    - `python backend/manage.py migrate --settings=sentinelke.settings_local --noinput`
-3. Start local services:
+4. Start local services:
    - `powershell -ExecutionPolicy Bypass -File .\scripts\start_local_stack.ps1`
-4. Check health:
+5. Check health:
    - `powershell -ExecutionPolicy Bypass -File .\scripts\check_local_stack.ps1`
-5. Stop services:
+6. Stop services:
    - `powershell -ExecutionPolicy Bypass -File .\scripts\stop_local_stack.ps1`
 
 ## Testing

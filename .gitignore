@@ -7,3 +7,7 @@ desktop/windows/__pycache__/
 services/ussd_service/__pycache__/
 SentinelKE_Setup.exe
 tools/*.tmp
+.env
+.env.*
+!.env.example
+!.env.*.example

@@ -9,7 +9,7 @@ APPDIR="$ROOT/deploy/linux/AppDir"
 mkdir -p "$OUTDIR" "$APPDIR/usr/bin" "$APPDIR/usr/share/sentinelke"
 cp "$ROOT/run_all.py" "$APPDIR/usr/share/sentinelke/run_all.py"
 cp "$ROOT/health_check.py" "$APPDIR/usr/share/sentinelke/health_check.py"
-cp "$ROOT/.env.prod" "$APPDIR/usr/share/sentinelke/.env.prod"
+cp "$ROOT/.env.prod.example" "$APPDIR/usr/share/sentinelke/.env.prod.example"
 cat > "$APPDIR/usr/bin/sentinelke" <<'EOF'
 #!/usr/bin/env bash
 cd /usr/share/sentinelke

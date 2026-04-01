@@ -79,6 +79,7 @@ def main() -> int:
     print(f'  - {ROOT / ".env.prod"}')
     print(f'  - {ROOT / ".env.mobile"}')
     print(f'  - {ROOT / "deploy" / "web" / ".env.production"}')
+    print(f'  - Example templates: {ROOT / ".env.prod.example"}, {ROOT / ".env.dev.example"}, {ROOT / ".env.desktop.example"}, {ROOT / ".env.mobile.example"}')
     print(f'  - Admin bootstrap target user: {admin_user}')
     if install_services:
         print('  - Service installation can now be completed with desktop/windows/install_service.ps1 or deploy/linux/install.sh')
