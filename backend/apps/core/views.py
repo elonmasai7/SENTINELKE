@@ -283,9 +283,9 @@ def _dashboard_payload(request):
         })
     if not live_alert_feed:
         live_alert_feed = [
-            {'level': 'CRITICAL', 'message': 'Watchlist hit', 'location': 'Nairobi CBD'},
-            {'level': 'HIGH', 'message': 'Financial anomaly', 'location': 'Mombasa'},
-            {'level': 'MEDIUM', 'message': 'Device synced', 'location': 'DCI Unit 4'},
+            {'level': 'CRITICAL', 'message': 'Watchlist movement detected', 'location': 'Nairobi CBD'},
+            {'level': 'HIGH', 'message': 'Patrol drone sweep active', 'location': 'Kenyatta Avenue'},
+            {'level': 'MEDIUM', 'message': 'Field unit synced to demo route', 'location': 'Moi Avenue'},
         ]
 
     threat_score = max(average_ai_risk, 87 if live_alert_feed else 78)
@@ -338,9 +338,39 @@ def _dashboard_payload(request):
     if not map_positions:
         now = timezone.now().isoformat()
         map_positions = [
-            {'id': 'seed-1', 'asset_type': 'incident', 'identifier': 'INC-001', 'lat': -1.2921, 'lng': 36.8219, 'label': 'Nairobi CBD', 'severity': 'CRITICAL', 'observed_at': now},
-            {'id': 'seed-2', 'asset_type': 'watchlist', 'identifier': 'WATCH-44', 'lat': -4.0435, 'lng': 39.6682, 'label': 'Mombasa Port', 'severity': 'HIGH', 'observed_at': now},
-            {'id': 'seed-3', 'asset_type': 'drone', 'identifier': 'DRN-07', 'lat': -0.0917, 'lng': 34.7680, 'label': 'Kisumu Link', 'severity': 'MEDIUM', 'observed_at': now},
+            {
+                'id': 'demo-1',
+                'asset_type': 'watchlist',
+                'identifier': 'WATCH-CBD-01',
+                'lat': -1.28333,
+                'lng': 36.81722,
+                'label': 'KICC Approach',
+                'severity': 'CRITICAL',
+                'observed_at': now,
+                'is_demo': True,
+            },
+            {
+                'id': 'demo-2',
+                'asset_type': 'officer',
+                'identifier': 'UNIT-CBD-04',
+                'lat': -1.28475,
+                'lng': 36.82160,
+                'label': 'Kenyatta Avenue Patrol',
+                'severity': 'HIGH',
+                'observed_at': now,
+                'is_demo': True,
+            },
+            {
+                'id': 'demo-3',
+                'asset_type': 'drone',
+                'identifier': 'DRN-CBD-07',
+                'lat': -1.28690,
+                'lng': 36.82440,
+                'label': 'Moi Avenue Sweep',
+                'severity': 'MEDIUM',
+                'observed_at': now,
+                'is_demo': True,
+            },
         ]
 
     graph_nodes = [{'id': 'case-nexus', 'label': 'Case Nexus', 'group': 'core', 'score': threat_score}]

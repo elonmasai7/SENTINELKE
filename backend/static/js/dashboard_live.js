@@ -22,6 +22,33 @@
     nodes: graphNodesSeed,
     edges: graphEdgesSeed,
   };
+  let map;
+  let featureGroup;
+  let hasCenteredDemoMap = false;
+
+  const demoRoutes = {
+    'demo-1': [
+      [-1.28333, 36.81722],
+      [-1.28405, 36.81840],
+      [-1.28470, 36.81955],
+      [-1.28510, 36.82030],
+      [-1.28425, 36.81910],
+    ],
+    'demo-2': [
+      [-1.28475, 36.82160],
+      [-1.28540, 36.82225],
+      [-1.28615, 36.82310],
+      [-1.28535, 36.82390],
+      [-1.28460, 36.82265],
+    ],
+    'demo-3': [
+      [-1.28690, 36.82440],
+      [-1.28755, 36.82330],
+      [-1.28810, 36.82220],
+      [-1.28730, 36.82145],
+      [-1.28655, 36.82285],
+    ],
+  };
 
   function severityColor(level) {
     switch ((level || '').toUpperCase()) {
@@ -36,21 +63,21 @@
 
   function markerHtml(position) {
     const level = position.severity || (position.threat_overlay && position.threat_overlay.severity) || 'HIGH';
+    const demoTag = position.is_demo ? '<strong>Demo route active</strong>' : '';
     return '<div class="map-badge" style="box-shadow: 0 0 0 0.2rem rgba(0,0,0,0.08); border-color:' + severityColor(level) + '">' +
       '<span>[' + level + '] ' + (position.asset_type || 'asset') + '</span>' +
       '<strong>' + (position.label || position.identifier || 'Unknown') + '</strong>' +
+      demoTag +
       '</div>';
   }
 
   const mapElement = document.getElementById('intelMap');
-  let map;
-  let featureGroup;
   if (mapElement && window.L) {
     map = L.map(mapElement, {
       zoomControl: true,
       scrollWheelZoom: false,
       attributionControl: true,
-    }).setView([-1.2921, 36.8219], 6);
+    }).setView([-1.2921, 36.8219], 12);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18,
@@ -74,13 +101,15 @@
       severity: payload.severity || (payload.threat_overlay && payload.threat_overlay.severity) || 'HIGH',
       threat_overlay: payload.threat_overlay || {},
       observed_at: payload.observed_at || new Date().toISOString(),
+      is_demo: Boolean(payload.is_demo),
     };
   }
 
-  function renderMapPositions(positions) {
+  function renderMapPositions(positions, options) {
     if (!map || !featureGroup) {
       return;
     }
+    const settings = options || {};
     positions.forEach(function (rawPosition) {
       const position = normalizePosition(rawPosition);
       if (position.lat == null || position.lng == null) {
@@ -90,11 +119,12 @@
       const marker = markersById.get(String(position.id));
       if (marker) {
         marker.setLatLng([position.lat, position.lng]);
+        marker.setStyle({ color: severityColor(position.severity), fillColor: severityColor(position.severity) });
         marker.setPopupContent(markerHtml(position));
         return;
       }
       const newMarker = L.circleMarker([position.lat, position.lng], {
-        radius: 8,
+        radius: position.is_demo ? 10 : 8,
         color: severityColor(position.severity),
         fillColor: severityColor(position.severity),
         fillOpacity: 0.75,
@@ -104,11 +134,24 @@
       markersById.set(String(position.id), newMarker);
     });
 
+    const allPositions = Array.from(positionsById.values());
+    if (!allPositions.length) {
+      return;
+    }
+    const demoOnly = allPositions.every(function (position) { return position.is_demo; });
+    if (demoOnly && !hasCenteredDemoMap) {
+      map.flyTo([-1.2854, 36.8219], 15, { duration: 1.8 });
+      hasCenteredDemoMap = true;
+      return;
+    }
+    if (settings.skipFit) {
+      return;
+    }
     const allMarkers = Array.from(markersById.values());
     if (allMarkers.length === 1) {
-      map.setView(allMarkers[0].getLatLng(), 10);
+      map.setView(allMarkers[0].getLatLng(), 14);
     } else if (allMarkers.length > 1) {
-      map.fitBounds(featureGroup.getBounds().pad(0.2));
+      map.fitBounds(featureGroup.getBounds().pad(demoOnly ? 0.08 : 0.2));
     }
   }
 
@@ -284,9 +327,39 @@
     };
   }
 
+  function animateDemoPositions() {
+    const demoPositionIds = Array.from(positionsById.values())
+      .filter(function (position) { return position.is_demo && demoRoutes[position.id]; })
+      .map(function (position) { return position.id; });
+    if (!demoPositionIds.length) {
+      return;
+    }
+    const stepState = {};
+    demoPositionIds.forEach(function (id) {
+      stepState[id] = 0;
+    });
+    window.setInterval(function () {
+      const updates = demoPositionIds.map(function (id) {
+        const route = demoRoutes[id];
+        stepState[id] = (stepState[id] + 1) % route.length;
+        const point = route[stepState[id]];
+        const current = positionsById.get(String(id)) || {};
+        return Object.assign({}, current, {
+          lat: point[0],
+          lng: point[1],
+          observed_at: new Date().toISOString(),
+          is_demo: true,
+        });
+      });
+      renderMapPositions(updates, { skipFit: true });
+      renderGraph(buildGraphNodesFromPositions());
+    }, 2600);
+  }
+
   renderMapPositions(mapSeed);
   renderGraph({ nodes: graphNodesSeed, edges: graphEdgesSeed });
   refreshDashboardFeed();
   initSocket();
+  window.setTimeout(animateDemoPositions, 1200);
   window.setInterval(refreshDashboardFeed, 30000);
 })();
