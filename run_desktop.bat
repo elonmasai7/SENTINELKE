@@ -2,9 +2,9 @@
 setlocal
 
 set "ROOT=%~dp0"
-cd /d "%ROOT%\flutter_field_kit"
+cd /d "%ROOT%"
 
-echo Running SentinelKE desktop app (Windows target)...
-flutter run -d windows
+echo Running SentinelKE Windows launcher shell...
+python desktop\windows\launcher.py --env-file .env.desktop
 
 endlocal

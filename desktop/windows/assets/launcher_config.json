@@ -1,0 +1,6 @@
+{
+  "name": "SentinelKE",
+  "dashboard": "http://127.0.0.1:8010",
+  "ml_service": "http://127.0.0.1:9000/health",
+  "llama_cpp": "http://127.0.0.1:8080"
+}

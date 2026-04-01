@@ -1,0 +1,16 @@
+[Unit]
+Description=SentinelKE Orchestrated Platform
+After=network-online.target docker.service
+Wants=network-online.target docker.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/sentinelke
+EnvironmentFile=/opt/sentinelke/.env.prod
+ExecStart=/usr/bin/python3 /opt/sentinelke/run_all.py --env-file .env.prod --no-browser
+ExecStop=/usr/bin/pkill -f "run_all.py"
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

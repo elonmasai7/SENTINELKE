@@ -1,17 +1,14 @@
 @echo off
 setlocal
 
-echo Stopping SentinelKE local processes...
-
-set "ROOT=%~dp0"
-set "RUNTIME=%ROOT%.runtime"
-set "STOPFLAG=%RUNTIME%\stop.flag"
-
-if not exist "%RUNTIME%" mkdir "%RUNTIME%"
-echo stop>"%STOPFLAG%"
-
-taskkill /FI "WINDOWTITLE eq SentinelKE - Django" /T /F >nul 2>nul
-taskkill /FI "WINDOWTITLE eq SentinelKE - ML Service" /T /F >nul 2>nul
+echo Stopping SentinelKE managed processes...
+taskkill /IM python.exe /FI "WINDOWTITLE eq *SentinelKE*" /T /F >nul 2>nul
+for %%F in (django.pid ml.pid celery.pid ussd.pid llama.pid) do (
+  if exist ".runtime\%%F" (
+    for /f %%P in (.runtime\%%F) do taskkill /PID %%P /T /F >nul 2>nul
+    del /f /q ".runtime\%%F" >nul 2>nul
+  )
+)
 
 echo Done.
 endlocal

@@ -1,0 +1,154 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile
+    command: gunicorn sentinelke.asgi:application -c /workspace/deploy/web/gunicorn.conf.py
+    working_dir: /app
+    env_file:
+      - ./.env.prod
+    volumes:
+      - ./backend:/app
+      - .:/workspace
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      neo4j:
+        condition: service_healthy
+      ml-service:
+        condition: service_started
+      llama-cpp:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "python manage.py check || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  celery:
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile
+    command: celery -A sentinelke worker -l info
+    working_dir: /app
+    env_file:
+      - ./.env.prod
+    volumes:
+      - ./backend:/app
+    depends_on:
+      web:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A sentinelke inspect ping -d celery@$$HOSTNAME || exit 1"]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 40s
+
+  postgres:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_DB: sentinelke
+      POSTGRES_USER: sentinelke
+      POSTGRES_PASSWORD: change-this
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sentinelke -d sentinelke"]
+      interval: 10s
+      timeout: 5s
+      retries: 8
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 8
+
+  neo4j:
+    image: neo4j:5.24
+    environment:
+      NEO4J_AUTH: neo4j/change-this
+    volumes:
+      - neo4j_data:/data
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:7474 || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+
+  ml-service:
+    build:
+      context: .
+      dockerfile: ml_services/Dockerfile
+    ports:
+      - "9000:9000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:9000/health || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+
+  llama-cpp:
+    image: ghcr.io/ggerganov/llama.cpp:server
+    command: ["--host", "0.0.0.0", "--port", "8080"]
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+
+  ussd-service:
+    build:
+      context: .
+      dockerfile: services/ussd_service/Dockerfile
+    env_file:
+      - ./.env.prod
+    ports:
+      - "8050:8050"
+    depends_on:
+      web:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8050/health || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+
+  nginx:
+    image: nginx:1.27-alpine
+    depends_on:
+      web:
+        condition: service_healthy
+      ussd-service:
+        condition: service_healthy
+    volumes:
+      - ./deploy/web/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./backend/staticfiles:/app/staticfiles:ro
+    ports:
+      - "80:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+
+volumes:
+  postgres_data:
+  neo4j_data:
